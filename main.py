@@ -27,7 +27,7 @@ TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN", "")
 OWNER_ID = int(os.getenv("OWNER_ID", "6881713177"))
 API_KEY = os.getenv("API_KEY", "")
 BASE_URL = os.getenv("BASE_URL", "https://api.groq.com/openai/v1")
-MODEL = os.getenv("MODEL", "llama-3.1-8b-instant")
+MODEL = os.getenv("MODEL", "moonshotai/kimi-k2-instruct-0905")
 
 # ============== LOGGING CONFIG ==============
 logging.basicConfig(
