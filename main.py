@@ -2,6 +2,7 @@
 ╔══════════════════════════════════════════════════════════════════╗
 ║                    SOULSLAYER BOT v2.0                           ║
 ║          Dark Sarcastic Roast Bot - Unbreakable Edition          ║
+║                         + Flask Keep-Alive                        ║
 ╚══════════════════════════════════════════════════════════════════╝
 
 Owner ID: 6881713177 (ABSOLUTE PROTECTION)
@@ -13,12 +14,27 @@ import sqlite3
 import logging
 import random
 import requests
+import threading
 from datetime import datetime, timedelta
 from typing import Optional
 from dotenv import load_dotenv
 
 import telebot
 from telebot.types import Message
+
+# ============== FLASK FOR KEEP-ALIVE ==============
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return "✅ SoulSlayer Bot is running and awake!"
+
+def run_flask():
+    """Run Flask server on Render's assigned port"""
+    port = int(os.environ.get('PORT', 8080))
+    app.run(host='0.0.0.0', port=port, debug=False, threaded=True)
 
 # ============== LOAD ENVIRONMENT ==============
 load_dotenv()
@@ -517,6 +533,11 @@ if __name__ == "__main__":
     # Initialize database
     init_database()
     
+    # Start Flask server in background thread
+    flask_thread = threading.Thread(target=run_flask, daemon=True)
+    flask_thread.start()
+    logger.info(f"🌐 Flask server started on port {os.environ.get('PORT', 8080)}")
+    
     # Log startup info
     logger.info("=" * 50)
     logger.info("🔥 SOULSLAYER BOT STARTED 🔥")
@@ -527,7 +548,7 @@ if __name__ == "__main__":
     logger.info(f"📊 Database: {DB_PATH}")
     logger.info("=" * 50)
     
-    # Start bot
+    # Start bot polling (blocking)
     try:
         bot.polling(none_stop=True, interval=0, timeout=60)
     except Exception as e:
